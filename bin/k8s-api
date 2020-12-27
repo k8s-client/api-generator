@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../../vendor/autoload.php',
+];
+
+foreach ($autoloadPaths as $autoloadPath) {
+    if (file_exists($autoloadPath)) {
+        require_once $autoloadPath;
+
+        break;
+    }
+}
+
+use Crs\K8sApiGenerator\Command\GenerateCommand;
+use Symfony\Component\Console\Application;
+
+
+$app = new Application(
+    'K8s API Generator',
+    '1.0.0'
+);
+$app->add(new GenerateCommand());
+$app->run();

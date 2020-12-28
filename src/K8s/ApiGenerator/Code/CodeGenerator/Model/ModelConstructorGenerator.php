@@ -97,7 +97,7 @@ class ModelConstructorGenerator
         }
 
         foreach ($requiredProps as $requiredProp) {
-            if ($requiredProp === $specProp) {
+            if ($requiredProp === $specProp && count($specProp->getModelRequiredProps()) > 0) {
                 continue;
             }
             if ($requiredProp === $metadataProp) {

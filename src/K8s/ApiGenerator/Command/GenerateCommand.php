@@ -76,7 +76,7 @@ class GenerateCommand extends Command
             'r',
             InputOption::VALUE_REQUIRED,
             'The root namespace for the generated classes.',
-            'K8s\\Client'
+            'K8s\\Api'
         );
     }
 

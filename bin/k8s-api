@@ -16,7 +16,7 @@ foreach ($autoloadPaths as $autoloadPath) {
     }
 }
 
-use Crs\K8sApiGenerator\Command\GenerateCommand;
+use K8s\ApiGenerator\Command\GenerateCommand;
 use Symfony\Component\Console\Application;
 
 

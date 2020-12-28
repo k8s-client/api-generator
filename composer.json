@@ -1,5 +1,5 @@
 {
-  "name": "crs/k8s-api-generator",
+  "name": "k8s/api-generator",
   "description": "Generates Kubernetes API objects from the OpenAPI spec.",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -16,6 +16,7 @@
   "require": {
     "php": ">=7.4",
     "ext-json": "*",
+    "k8s/core": "^1.0",
     "nette/php-generator": "^3.5",
     "symfony/console": "^5.1",
     "symfony/filesystem": "^5.1",
@@ -26,13 +27,16 @@
     "friendsofphp/php-cs-fixer": "^2.0",
     "phpstan/phpstan": "^0.12"
   },
+  "repositories": [
+    { "type": "vcs", "url": "https://github.com/ChadSikorra/k8s-core.git" }
+  ],
   "config": {
     "sort-packages": true
   },
   "bin": ["bin/k8s-api"],
   "autoload": {
     "psr-4": {
-      "Crs\\K8sApiGenerator\\": "src/Crs/K8sApiGenerator"
+      "K8s\\ApiGenerator\\": "src/K8s/ApiGenerator"
     }
   },
   "scripts": {

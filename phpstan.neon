@@ -3,4 +3,4 @@ parameters:
     treatPhpDocTypesAsCertain: false
     level: 7
     paths:
-        - src/Crs/K8sApiGenerator
+        - src/K8s/ApiGenerator

@@ -21,6 +21,7 @@ use K8s\ApiGenerator\Code\Formatter\DocBlockFormatterTrait;
 use K8s\ApiGenerator\Code\Formatter\PhpParameterDefinitionNameFormatter;
 use K8s\ApiGenerator\Parser\Metadata\Metadata;
 use K8s\ApiGenerator\Parser\Metadata\ServiceGroupMetadata;
+use K8s\Core\Contract\ApiInterface;
 use Nette\PhpGenerator\PhpNamespace;
 
 class ServiceCodeGenerator
@@ -44,9 +45,17 @@ class ServiceCodeGenerator
     public function generate(ServiceGroupMetadata $serviceGroup, Metadata $metadata, CodeOptions $options): CodeFile
     {
         $namespace = new PhpNamespace($this->makeFinalNamespace($serviceGroup->getFinalNamespace(), $options));
-        $namespace->addUse($options->getBaseServiceFqcn());
+        $namespace->addUse(ApiInterface::class);
+
         $class = $namespace->addClass($serviceGroup->getClassName());
-        $class->setExtends($options->getBaseServiceFqcn());
+        $class->addProperty('api')
+            ->setPrivate()
+            ->addComment('@var ApiInterface');
+
+        $constructor = $class->addMethod('__construct');
+        $param = $constructor->addParameter('api');
+        $param->setType(ApiInterface::class);
+        $constructor->addBody('$this->api = $api;');
 
         if ($serviceGroup->getDescription()) {
             $class->addComment($this->formatDocblockDescription($serviceGroup->getDescription()));

@@ -58,7 +58,7 @@ class OperationMethodBodyGenerator
             $type = $this->isPodExec($operation->getPhpMethodName()) ? 'exec' : 'generic';
             $method->addBody(
                 <<<PHP_BODY
-            $returnOrNot\$this->executeWebsocket(
+            $returnOrNot\$this->api->executeWebsocket(
                 \$uri,
                 ?,
                 \$handler
@@ -71,7 +71,7 @@ class OperationMethodBodyGenerator
         } else {
             $method->addBody(
                 <<<PHP_BODY
-            $returnOrNot\$this->executeHttp(
+            $returnOrNot\$this->api->executeHttp(
                 \$uri,
                 ?,
                 \$options
@@ -97,7 +97,7 @@ class OperationMethodBodyGenerator
 
         $method->addBody(
             <<<PHP_BODY
-            \$uri = \$this->makeUri(
+            \$uri = \$this->api->makeUri(
                  ?,
                  $params,
                  \$query

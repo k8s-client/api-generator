@@ -17,6 +17,7 @@ use K8s\ApiGenerator\Code\CodeFile;
 use K8s\ApiGenerator\Code\CodeOptions;
 use K8s\ApiGenerator\Parser\Metadata\Metadata;
 use K8s\ApiGenerator\Parser\Metadata\ServiceGroupMetadata;
+use K8s\Core\Contract\ApiInterface;
 use Nette\PhpGenerator\PhpNamespace;
 
 class ServiceFactoryCodeGenerator
@@ -26,10 +27,17 @@ class ServiceFactoryCodeGenerator
     public function generate(Metadata $metadata, CodeOptions $options): CodeFile
     {
         $namespace = new PhpNamespace($this->makeFinalNamespace('Service', $options));
+        $namespace->addUse(ApiInterface::class);
 
-        $namespace->addUse($options->getBaseServiceFactoryFqcn());
         $class = $namespace->addClass('ServiceFactory');
-        $class->addExtend($options->getBaseServiceFactoryFqcn());
+        $class->addProperty('api')
+            ->setPrivate()
+            ->addComment('@var ApiInterface');
+
+        $constructor = $class->addMethod('__construct');
+        $param = $constructor->addParameter('api');
+        $param->setType(ApiInterface::class);
+        $constructor->addBody('$this->api = $api;');
 
         foreach ($metadata->getServiceGroups() as $serviceGroup) {
             $serviceFqcn = $this->makeFinalNamespace(
@@ -38,11 +46,12 @@ class ServiceFactoryCodeGenerator
             );
             $namespace->addUse($serviceFqcn);
 
+            $namespace->addUse($serviceFqcn, null, $alias);
             $method = $class->addMethod($this->makeMethodName($serviceGroup));
             $method->setReturnType($serviceFqcn);
             $method->addBody(sprintf(
-                'return $this->makeService(\'%s\');',
-                $serviceFqcn,
+                'return new %s($this->api);',
+                $alias,
             ));
         }
 

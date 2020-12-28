@@ -21,13 +21,7 @@ class CodeOptions
 
     private string $srcDir;
 
-    private string $baseServiceFactoryFqcn = 'Crs\\K8s\\Service\\AbstractServiceFactory';
-
-    private string $baseServiceFqcn = 'Crs\\K8s\\Service\\AbstractService';
-
-    private string $annotationsBaseNamespace = 'Crs\\K8s\\Annotation';
-
-    private string $collectionFqcn = '\\Crs\\K8s\\Collection';
+    private string $annotationsBaseNamespace = 'K8s\\Core\\Annotation';
 
     public function __construct(
         string $version,
@@ -57,20 +51,5 @@ class CodeOptions
     public function getSrcDir(): string
     {
         return $this->srcDir;
-    }
-
-    public function getBaseServiceFqcn(): string
-    {
-        return $this->baseServiceFqcn;
-    }
-
-    public function getBaseServiceFactoryFqcn(): string
-    {
-        return $this->baseServiceFactoryFqcn;
-    }
-
-    public function getCollectionFqcn(): string
-    {
-        return $this->collectionFqcn;
     }
 }

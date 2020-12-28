@@ -19,6 +19,7 @@ use K8s\ApiGenerator\Code\Formatter\PhpMethodNameFormatter;
 use K8s\ApiGenerator\Code\Formatter\PhpPropertyNameFormatter;
 use K8s\ApiGenerator\Code\ModelProperty;
 use K8s\ApiGenerator\Parser\Metadata\Metadata;
+use K8s\Core\Collection;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 
@@ -56,7 +57,7 @@ class AllowedPropsMethodGenerator
                 $metadata->findDefinitionByGoPackageName($prop->getGoPackageName())
             );
             if ($modelProp->isCollection()) {
-                $namespace->addUse($options->getCollectionFqcn());
+                $namespace->addUse(Collection::class);
             }
             if ($modelProp->getModelFqcn()) {
                 $namespace->addUse($modelProp->getModelFqcn());
@@ -119,7 +120,7 @@ class AllowedPropsMethodGenerator
             if (!$modelProp->isCollection()) {
                 continue;
             }
-            $namespace->addUse($options->getCollectionFqcn());
+            $namespace->addUse(Collection::class);
             $addProperty = rtrim($phpProperty, 's');
 
             $phpMethodName = $this->methodNameFormatter->formatModelProperty($modelProp, 'add');

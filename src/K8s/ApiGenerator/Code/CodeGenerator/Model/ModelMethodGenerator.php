@@ -18,6 +18,7 @@ use K8s\ApiGenerator\Code\Formatter\DocBlockFormatterTrait;
 use K8s\ApiGenerator\Code\Formatter\PhpMethodNameFormatter;
 use K8s\ApiGenerator\Code\ModelProperty;
 use K8s\ApiGenerator\Parser\Metadata\DefinitionMetadata;
+use K8s\Core\Collection;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 
@@ -97,7 +98,7 @@ class ModelMethodGenerator
         if (!$property->isCollection()) {
             return;
         }
-        $phpNamespace->addUse($options->getCollectionFqcn());
+        $phpNamespace->addUse(Collection::class);
         $addProperty = rtrim($phpProperty, 's');
 
         $method = $phpClass->addMethod($this->methodNameFormatter->formatModelProperty($property, 'add'));

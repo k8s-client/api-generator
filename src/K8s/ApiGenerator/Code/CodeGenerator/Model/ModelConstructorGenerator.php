@@ -18,6 +18,7 @@ use K8s\ApiGenerator\Code\Formatter\PhpPropertyNameFormatter;
 use K8s\ApiGenerator\Code\ModelProperty;
 use K8s\ApiGenerator\Parser\Metadata\DefinitionMetadata;
 use K8s\ApiGenerator\Parser\Metadata\Metadata;
+use K8s\Core\Collection;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
@@ -117,7 +118,7 @@ class ModelConstructorGenerator
                     $metadata->findDefinitionByGoPackageName($specReqProp->getGoPackageName())
                 );
                 if ($modelProp->isCollection()) {
-                    $namespace->addUse($options->getCollectionFqcn());
+                    $namespace->addUse(Collection::class);
                 }
                 if ($modelProp->getModelFqcn()) {
                     $namespace->addUse($modelProp->getModelFqcn());
@@ -224,7 +225,7 @@ class ModelConstructorGenerator
         }
 
         if ($prop->isCollection()) {
-            $namespace->addUse($options->getCollectionFqcn());
+            $namespace->addUse(Collection::class);
             $constructor->addBody(sprintf(
                 '$this->%s = new Collection($%s);',
                 $prop->getPhpPropertyName(),

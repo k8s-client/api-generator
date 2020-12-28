@@ -112,7 +112,7 @@ class OperationMethodCodeGenerator
             if (!$this->isPodExec($operation->getPhpMethodName())) {
                 $param->setType('callable');
             } else {
-                $types .= '|\Crs\K8s\Websocket\Contract\ContainerExecInterface';
+                $types .= '|object';
             }
             if (!$operation->isWebsocketOperation()) {
                 $param->setNullable(true);

@@ -197,6 +197,14 @@ class ModelProperty
         return $docType;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getDefaultConstructorValue()
+    {
+        return $this->isCollection() ? [] : null;
+    }
+
     public function getName(): string
     {
         return $this->property->getName();

@@ -60,7 +60,6 @@ class ModelConstructorGenerator
             $this->addGenericConstructor(
                 $class,
                 $namespace,
-                $options,
                 $properties
             );
         }
@@ -98,11 +97,16 @@ class ModelConstructorGenerator
         }
 
         foreach ($requiredProps as $requiredProp) {
+            if ($requiredProp === $specProp) {
+                continue;
+            }
+            if ($requiredProp === $metadataProp) {
+                continue;
+            }
             $this->addPropertyToConstructor(
                 $constructor,
                 $requiredProp,
                 $namespace,
-                $options,
                 true
             );
         }
@@ -171,7 +175,6 @@ class ModelConstructorGenerator
     private function addGenericConstructor(
         ClassType $classType,
         PhpNamespace $namespace,
-        CodeOptions $options,
         array $properties
     ): void {
         $constructor = $classType->addMethod('__construct');
@@ -181,7 +184,6 @@ class ModelConstructorGenerator
                 $constructor,
                 $property,
                 $namespace,
-                $options,
                 false
             );
         }
@@ -213,7 +215,6 @@ class ModelConstructorGenerator
         Method $constructor,
         ModelProperty $prop,
         PhpNamespace $namespace,
-        CodeOptions $options,
         bool $isRequired
     ): void {
         $param = $constructor->addParameter($prop->getPhpPropertyName());
@@ -221,7 +222,7 @@ class ModelConstructorGenerator
         $param->setNullable(!($isRequired || $prop->isCollection()));
 
         if (!$isRequired) {
-            $param->setDefaultValue($prop->isCollection() ? [] : null);
+            $param->setDefaultValue($prop->getDefaultConstructorValue());
         }
 
         if ($prop->isCollection()) {
@@ -240,7 +241,7 @@ class ModelConstructorGenerator
         }
         $constructor->addComment(sprintf(
             '@param %s $%s',
-            $prop->getPhpDocType(),
+            $prop->getPhpDocType() . ($isRequired && !$prop->isCollection() ? '' : '|null'),
             $prop->getPhpPropertyName()
         ));
     }

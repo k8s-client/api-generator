@@ -142,7 +142,7 @@ class ServiceGroupMetadata
             $operationIsNamespaced = strpos($operation->getUriPath(), "/{namespace}/") !== false;
             if ($operationIsNamespaced && $namespaced) {
                 return $operation;
-            }  elseif (!$operationIsNamespaced && !$namespaced) {
+            } elseif (!$operationIsNamespaced && !$namespaced) {
                 return $operation;
             } else {
                 continue;

@@ -52,10 +52,24 @@ class ServiceCodeGenerator
             ->setPrivate()
             ->addComment('@var ApiInterface');
 
+        $class->addProperty('namespace')
+            ->setPrivate()
+            ->addComment('@var string|null');
+
         $constructor = $class->addMethod('__construct');
         $param = $constructor->addParameter('api');
         $param->setType(ApiInterface::class);
         $constructor->addBody('$this->api = $api;');
+
+        $method = $class->addMethod('useNamespace')->setReturnType('self');
+        $param = $method->addParameter('namespace');
+        $param->setType('string');
+        $method->addBody(<<<BODY
+            \$this->namespace = \$namespace;
+            
+            return \$this;
+            BODY
+        );
 
         if ($serviceGroup->getDescription()) {
             $class->addComment($this->formatDocblockDescription($serviceGroup->getDescription()));

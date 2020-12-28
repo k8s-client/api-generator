@@ -100,7 +100,8 @@ class OperationMethodBodyGenerator
             \$uri = \$this->api->makeUri(
                  ?,
                  $params,
-                 \$query
+                 \$query,
+                 \$this->namespace
             );
             PHP_BODY,
             [$operation->getUriPath()]

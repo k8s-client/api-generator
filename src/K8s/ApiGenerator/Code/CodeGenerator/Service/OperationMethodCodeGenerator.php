@@ -99,11 +99,12 @@ class OperationMethodCodeGenerator
             }
         }
 
-        $docblocks[] = ['param' => 'array|object $query'];
+        $docblocks[] = ['param' => 'array $query'];
 
         # This conditional is here for positioning...if it's a websocket, we want the callable / handler first.
         if (!$operation->isWebsocketOperation()) {
-            $method->addParameter('query', []);
+            $method->addParameter('query', [])
+                ->setType('array');
         }
 
         if ($operation->needsCallableParameter()) {
@@ -123,7 +124,8 @@ class OperationMethodCodeGenerator
         }
 
         if ($operation->isWebsocketOperation()) {
-            $method->addParameter('query', []);
+            $method->addParameter('query', [])
+                ->setType('array');
         }
 
         switch ($operation->getReturnedType()) {

@@ -64,7 +64,8 @@ class ServiceCodeGenerator
         $method = $class->addMethod('useNamespace')->setReturnType('self');
         $param = $method->addParameter('namespace');
         $param->setType('string');
-        $method->addBody(<<<BODY
+        $method->addBody(
+            <<<BODY
             \$this->namespace = \$namespace;
             
             return \$this;

@@ -17,6 +17,7 @@ foreach ($autoloadPaths as $autoloadPath) {
 }
 
 use K8s\ApiGenerator\Command\GenerateCommand;
+use K8s\ApiGenerator\Command\ApiVersionsCommand;
 use Symfony\Component\Console\Application;
 
 
@@ -25,4 +26,5 @@ $app = new Application(
     '1.0.0'
 );
 $app->add(new GenerateCommand());
+$app->add(new ApiVersionsCommand());
 $app->run();

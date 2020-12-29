@@ -38,6 +38,7 @@ class GitTag
 
         return strpos($version, '-rc') === false
             && strpos($version, '-beta') === false
+            && strpos($version, '-dev') === false
             && strpos($version, '-alpha') === false;
     }
 

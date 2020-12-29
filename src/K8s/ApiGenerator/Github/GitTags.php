@@ -24,13 +24,7 @@ class GitTags
 
     public function getLatestStableTag(?string $version = null): GitTag
     {
-        $gitTags = $this->gitTags;
-
-        # We first sort all tags, starting with the latest release
-        usort($gitTags, function (GitTag $tag1, GitTag $tag2): int {
-            return version_compare($tag1->getCommonName(), $tag2->getCommonName());
-        });
-        $gitTags = array_reverse($gitTags);
+        $gitTags = $this->getAndSortTags();
 
         # if no version is specified, we only want the latest stable release.
         # If no stable release is found, get the latest recorded.
@@ -47,5 +41,29 @@ class GitTags
             'Could not find a tag for version "%s".',
             $version
         ));
+    }
+
+    public function getStableTags(?string $ge = null): array
+    {
+        return array_filter($this->getAndSortTags(), function (GitTag $tag) use ($ge) {
+            if ($ge === null) {
+                return $tag->isStable();
+            }
+
+            return version_compare($tag->getCommonName(), $ge, 'ge') && $tag->isStable();
+        });
+    }
+
+    private function getAndSortTags(): array
+    {
+        $gitTags = $this->gitTags;
+
+        # We first sort all tags, starting with the latest release
+        usort($gitTags, function (GitTag $tag1, GitTag $tag2): int {
+            return version_compare($tag1->getCommonName(), $tag2->getCommonName());
+        });
+        $gitTags = array_reverse($gitTags);
+
+        return $gitTags;
     }
 }

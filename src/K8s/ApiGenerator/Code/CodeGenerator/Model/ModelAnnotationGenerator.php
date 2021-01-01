@@ -91,7 +91,9 @@ class ModelAnnotationGenerator
             $isWatchAction = ($action === 'watch' || $action === 'watch-all');
             $returnedDefinition = $operation->getReturnedDefinition();
             if ($returnedDefinition && !$isWatchAction) {
-                $responseModel = $this->makeFinalNamespace($returnedDefinition->getPhpFqcn(), $options);
+                $responseModel = ($returnedDefinition === $model)
+                    ? 'static::class'
+                    : $this->makeFinalNamespace($returnedDefinition->getPhpFqcn(), $options);
                 $params[] = sprintf('response="%s"', $responseModel);
             } elseif ($isWatchAction) {
                 $responseModel = $metadata->findDefinitionByKind('WatchEvent', 'v1');

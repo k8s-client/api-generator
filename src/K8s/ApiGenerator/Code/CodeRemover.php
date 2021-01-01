@@ -19,27 +19,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CodeRemover
 {
+    use CodeDirectoriesTrait;
+
     public function removeCode(OutputInterface $output, CodeOptions $options): void
     {
-        $directory = $options->getSrcDir();
-        $directory = substr($directory, -1) !== DIRECTORY_SEPARATOR ? ($directory . DIRECTORY_SEPARATOR) : $directory;
-        if ($directory[0] !== DIRECTORY_SEPARATOR) {
-            $directory = getcwd() . DIRECTORY_SEPARATOR . $directory;
-        }
-        $directory .= implode(
-            DIRECTORY_SEPARATOR,
-            explode('\\', $options->getRootNamespace())
-        );
-        $directory .= DIRECTORY_SEPARATOR;
+        $directories = $this->getCodeDirectories($options);
 
-        $directories = [
-            'models' => 'Model',
-            'services' => 'Service',
-        ];
-
-        foreach ($directories as $name => $dirName) {
-            $dirPath = $directory . $dirName;
-            if (!file_exists($directory)) {
+        foreach ($directories as $name => $dirPath) {
+            if (!file_exists($dirPath)) {
                 continue;
             }
             $output->writeln(sprintf(

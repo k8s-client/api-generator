@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace K8s\ApiGenerator\Command;
 
+use K8s\ApiGenerator\Code\CodeCleaner;
 use K8s\ApiGenerator\Code\CodeGenerator;
 use K8s\ApiGenerator\Code\CodeOptions;
 use K8s\ApiGenerator\Code\CodeRemover;
@@ -49,13 +50,16 @@ class GenerateCommand extends Command
 
     private CodeRemover $codeRemover;
 
+    private CodeCleaner $codeCleaner;
+
     public function __construct(
         ?GithubClient $githubClient = null,
         ?Serializer $serializer = null,
         ?MetadataParser $metadataParser = null,
         ?CodeGenerator $codeGenerator = null,
         ?ConfigurationManager $configManager = null,
-        ?CodeRemover $codeRemover = null
+        ?CodeRemover $codeRemover = null,
+        ?CodeCleaner $codeCleaner = null
     ) {
         $this->githubClient = $githubClient ?? new GithubClient();
         $this->serializer = $serializer ?? new Serializer();
@@ -63,6 +67,7 @@ class GenerateCommand extends Command
         $this->codeGenerator = $codeGenerator ?? new CodeGenerator();
         $this->configManager = $configManager ?? new ConfigurationManager();
         $this->codeRemover = $codeRemover ?? new CodeRemover();
+        $this->codeCleaner = $codeCleaner ?? new CodeCleaner();
         parent::__construct('generate');
     }
 
@@ -194,6 +199,8 @@ class GenerateCommand extends Command
             $metadata,
             $codeOptions
         );
+
+        $this->codeCleaner->cleanCode($codeOptions, $output);
 
         if ($config) {
             $config->setApiVersion($apiVersion);

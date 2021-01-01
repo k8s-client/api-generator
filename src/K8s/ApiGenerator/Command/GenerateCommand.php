@@ -15,6 +15,7 @@ namespace K8s\ApiGenerator\Command;
 
 use K8s\ApiGenerator\Code\CodeGenerator;
 use K8s\ApiGenerator\Code\CodeOptions;
+use K8s\ApiGenerator\Code\CodeRemover;
 use K8s\ApiGenerator\Config\Configuration;
 use K8s\ApiGenerator\Config\ConfigurationManager;
 use K8s\ApiGenerator\Github\GithubClient;
@@ -46,18 +47,22 @@ class GenerateCommand extends Command
 
     private ConfigurationManager $configManager;
 
+    private CodeRemover $codeRemover;
+
     public function __construct(
         ?GithubClient $githubClient = null,
         ?Serializer $serializer = null,
         ?MetadataParser $metadataParser = null,
         ?CodeGenerator $codeGenerator = null,
-        ?ConfigurationManager $configManager = null
+        ?ConfigurationManager $configManager = null,
+        ?CodeRemover $codeRemover = null
     ) {
         $this->githubClient = $githubClient ?? new GithubClient();
         $this->serializer = $serializer ?? new Serializer();
         $this->metadataParser = $metadataParser ?? new MetadataParser();
         $this->codeGenerator = $codeGenerator ?? new CodeGenerator();
         $this->configManager = $configManager ?? new ConfigurationManager();
+        $this->codeRemover = $codeRemover ?? new CodeRemover();
         parent::__construct('generate');
     }
 
@@ -72,23 +77,29 @@ class GenerateCommand extends Command
         );
         $this->addOption(
             'src-dir',
-            'd',
+            null,
             InputOption::VALUE_REQUIRED,
             'The location of the soure files.',
             'src/'
         );
         $this->addOption(
             'root-namespace',
-            'r',
+            null,
             InputOption::VALUE_REQUIRED,
             'The root namespace for the generated classes.',
             'K8s\\Api'
         );
         $this->addOption(
             'force',
-            'f',
+            null,
             InputOption::VALUE_NONE,
             'Always generate the API regardless of the config values.'
+        );
+        $this->addOption(
+            'no-delete',
+            null,
+            InputOption::VALUE_NONE,
+            'Do not delete existing generated code.'
         );
     }
 
@@ -146,11 +157,6 @@ class GenerateCommand extends Command
             self::SWAGGER_SPEC_PATH
         );
 
-        $output->writeln(sprintf(
-            "<info>Generating API data for version %s</info>",
-            $tag->getCommonName()
-        ));
-
         /** @var Swagger $openApi */
         try {
             $openApi = $this->serializer->deserialize($gitContent->getContent(), Swagger::class);
@@ -167,14 +173,25 @@ class GenerateCommand extends Command
             return self::FAILURE;
         }
 
+        $codeOptions =  new CodeOptions(
+            $tag->getCommonName(),
+            $rootNamespace,
+            $srcDir
+        );
         $metadata = $this->metadataParser->parse($openApi);
+
+        if (!$input->getOption('no-delete')) {
+            $this->codeRemover->removeCode($output, $codeOptions);
+        }
+
+        $output->writeln(sprintf(
+            "<info>Generating API data for version %s</info>",
+            $tag->getCommonName()
+        ));
+
         $this->codeGenerator->generateCode(
             $metadata,
-            new CodeOptions(
-                $tag->getCommonName(),
-                $rootNamespace,
-                $srcDir
-            )
+            $codeOptions
         );
 
         if ($config) {

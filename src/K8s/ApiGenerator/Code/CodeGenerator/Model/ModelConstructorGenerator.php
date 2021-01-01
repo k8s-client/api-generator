@@ -241,7 +241,7 @@ class ModelConstructorGenerator
         }
         $constructor->addComment(sprintf(
             '@param %s $%s',
-            $prop->getPhpDocType() . ($isRequired && !$prop->isCollection() ? '' : '|null'),
+            $prop->getPhpDocType() . ($isRequired && !$prop->isCollection() ? '|null' : ''),
             $prop->getPhpPropertyName()
         ));
     }

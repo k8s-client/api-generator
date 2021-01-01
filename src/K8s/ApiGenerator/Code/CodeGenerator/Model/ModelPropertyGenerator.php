@@ -74,6 +74,9 @@ class ModelPropertyGenerator
         if ($modelProp->getModelFqcn()) {
             $annotationProps[] = sprintf('model=%s::class', $modelProp->getModelClassName());
         }
+        if ($modelProp->isRequired()) {
+            $annotationProps[] = 'isRequired=true';
+        }
 
         $phpProperty->addComment(
             sprintf(

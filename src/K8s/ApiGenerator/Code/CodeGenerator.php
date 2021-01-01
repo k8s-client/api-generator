@@ -48,7 +48,7 @@ class CodeGenerator
                 $codeFile = $this->modelCodeGenerator->generate($model, $metadata, $options);
                 $this->phpFileWriter->write(
                     $codeFile,
-                    $options->getSrcDir()
+                    $options
                 );
             }
         }
@@ -60,7 +60,7 @@ class CodeGenerator
             );
             $this->phpFileWriter->write(
                 $codeFile,
-                $options->getSrcDir()
+                $options
             );
         }
         $codeFile = $this->serviceFactoryCodeGenerator->generate(
@@ -69,7 +69,7 @@ class CodeGenerator
         );
         $this->phpFileWriter->write(
             $codeFile,
-            $options->getSrcDir()
+            $options
         );
     }
 }

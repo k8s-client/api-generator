@@ -17,19 +17,23 @@ class CodeOptions
 {
     private string $rootNamespace;
 
-    private string $version;
+    private string $apiVersion;
 
     private string $srcDir;
+
+    private string $generatorVersion;
 
     private string $annotationsBaseNamespace = 'K8s\\Core\\Annotation';
 
     public function __construct(
-        string $version,
+        string $apiVersion,
+        string $generatorVersion,
         string $rootNamespace,
         string $srcDir
     ) {
         $this->rootNamespace = $rootNamespace;
-        $this->version = $version;
+        $this->apiVersion = $apiVersion;
+        $this->generatorVersion = $generatorVersion;
         $this->srcDir = $srcDir;
     }
 
@@ -43,13 +47,18 @@ class CodeOptions
         return $this->rootNamespace;
     }
 
-    public function getVersion(): string
+    public function getApiVersion(): string
     {
-        return $this->version;
+        return $this->apiVersion;
     }
 
     public function getSrcDir(): string
     {
         return $this->srcDir;
+    }
+
+    public function getGeneratorVersion(): string
+    {
+        return $this->generatorVersion;
     }
 }

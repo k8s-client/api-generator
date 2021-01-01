@@ -177,8 +177,8 @@ class OperationMethodCodeGenerator
         if ($operation->isDeprecated() && $operation->getDeprecationDescription()) {
             $docblocks[] = ['deprecated' => $operation->getDeprecationDescription()];
         }
-        if ($this->docLinkGenerator->canGenerateLink($options->getVersion())) {
-            $docblocks[] = ['link' => $this->docLinkGenerator->generateLink($options->getVersion(), $operation)];
+        if ($this->docLinkGenerator->canGenerateLink($options->getApiVersion())) {
+            $docblocks[] = ['link' => $this->docLinkGenerator->generateLink($options->getApiVersion(), $operation)];
         }
 
         return $docblocks;

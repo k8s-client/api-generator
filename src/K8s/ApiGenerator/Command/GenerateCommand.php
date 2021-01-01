@@ -175,6 +175,7 @@ class GenerateCommand extends Command
 
         $codeOptions =  new CodeOptions(
             $tag->getCommonName(),
+            $this->getAppVersion(),
             $rootNamespace,
             $srcDir
         );

@@ -49,12 +49,20 @@ class ApiVersionsCommand extends Command
             'The Github K8s API repo.',
             'k8s-api'
         );
+        $this->addOption(
+            'last-n',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Only for the last number of non-minor releases.',
+            'k8s-api'
+        );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $kubernetesTags = $this->githubClient->getTags(self::GITHUB_OWNER, self::GITHUB_REPO);
         $minVersion = $input->getOption('min-version');
+        $lastN = $input->getOption('last-n');
 
         $ghApiOwner = $input->getOption('gh-api-owner');
         $ghApiRepo = $input->getOption('gh-api-repo');
@@ -63,8 +71,16 @@ class ApiVersionsCommand extends Command
         /** @var GitTag $tag */
         $kTags = [];
         foreach ($kubernetesTags->getStableTags($minVersion) as $tag) {
-            $kTags[ltrim($tag->getCommonName(), 'v')] = $tag;
+            $major = explode('.', $tag->getCommonName())[1];
+            if (!isset($kTags[$major])) {
+                $kTags[$major] = $tag;
+            }
+            if ($lastN !== null && count($kTags) >= $lastN) {
+                break;
+            }
         }
+        $kTags = array_values($kTags);
+
         $aTags = [];
         foreach ($apiTags->getStableTags() as $tag) {
             $aTags[$tag->getCommonName()] = $tag;
@@ -82,6 +98,7 @@ class ApiVersionsCommand extends Command
                 return $tag->getCommonName();
             }, $toReturn)
         ];
+
         $json = json_encode($toReturn);
         $output->writeln($json);
 

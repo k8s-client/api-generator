@@ -15,6 +15,8 @@ namespace K8s\ApiGenerator\Command;
 
 use K8s\ApiGenerator\Code\CodeGenerator;
 use K8s\ApiGenerator\Code\CodeOptions;
+use K8s\ApiGenerator\Config\Configuration;
+use K8s\ApiGenerator\Config\ConfigurationManager;
 use K8s\ApiGenerator\Github\GithubClient;
 use K8s\ApiGenerator\Github\GitTag;
 use K8s\ApiGenerator\Parser\MetadataParser;
@@ -42,16 +44,20 @@ class GenerateCommand extends Command
 
     private CodeGenerator $codeGenerator;
 
+    private ConfigurationManager $configManager;
+
     public function __construct(
         ?GithubClient $githubClient = null,
         ?Serializer $serializer = null,
         ?MetadataParser $metadataParser = null,
-        ?CodeGenerator $codeGenerator = null
+        ?CodeGenerator $codeGenerator = null,
+        ?ConfigurationManager $configManager = null
     ) {
         $this->githubClient = $githubClient ?? new GithubClient();
         $this->serializer = $serializer ?? new Serializer();
         $this->metadataParser = $metadataParser ?? new MetadataParser();
         $this->codeGenerator = $codeGenerator ?? new CodeGenerator();
+        $this->configManager = $configManager ?? new ConfigurationManager();
         parent::__construct('generate');
     }
 
@@ -77,6 +83,12 @@ class GenerateCommand extends Command
             InputOption::VALUE_REQUIRED,
             'The root namespace for the generated classes.',
             'K8s\\Api'
+        );
+        $this->addOption(
+            'force',
+            'f',
+            InputOption::VALUE_NONE,
+            'Always generate the API regardless of the config values.'
         );
     }
 
@@ -109,6 +121,22 @@ class GenerateCommand extends Command
             $output,
             $apiVersion
         );
+        $apiVersion = $apiVersion ?? $tag->getCommonName();
+
+        $config = $this->configManager->read();
+        if ($config && !$this->shouldGenerateApi($input, $config, $apiVersion)) {
+            $output->writeln(sprintf(
+                '<info>Not generating API for version %s.</info>',
+                $apiVersion
+            ));
+            $output->writeln(sprintf(
+                '<info>Config is at API version %s and generator version %s. </info>',
+                $config->getApiVersion(),
+                $config->getGeneratorVersion()
+            ));
+
+            return self::SUCCESS;
+        }
 
         $output->writeln("<info>Fetching Open-API specification for API data...</info>");
         $gitContent = $this->githubClient->getBlob(
@@ -149,6 +177,15 @@ class GenerateCommand extends Command
             )
         );
 
+        if ($config) {
+            $config->setApiVersion($apiVersion);
+            $config->setGeneratorVersion($this->getAppVersion());
+        } else {
+            $config = $this->configManager->newConfig($apiVersion, $this->getAppVersion());
+        }
+
+        $this->configManager->write($config);
+
         $output->writeln("<info>Finished generating API data!</info>");
 
         return self::SUCCESS;
@@ -164,5 +201,20 @@ class GenerateCommand extends Command
         );
 
         return $gitTags->getLatestStableTag($version);
+    }
+
+    private function getAppVersion(): string
+    {
+        return $this->getApplication()->getVersion();
+    }
+
+    private function shouldGenerateApi(InputInterface $input, Configuration $config, string $apiVersion): bool
+    {
+        if ($input->getOption('force')) {
+            return true;
+        }
+
+        return version_compare($this->getAppVersion(), $config->getGeneratorVersion(), 'gt')
+            || version_compare($apiVersion, $config->getApiVersion(), 'gt');
     }
 }

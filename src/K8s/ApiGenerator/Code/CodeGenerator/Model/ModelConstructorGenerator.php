@@ -164,9 +164,14 @@ class ModelConstructorGenerator
 
         /** @var ModelProperty $prop */
         foreach ($docblockParams as $paramName => $prop) {
+            $docType = $prop->getPhpDocType();
+            if (!$prop->isRequired() && !$prop->isCollection()) {
+                $docType .= '|null';
+            }
+
             $constructor->addComment(sprintf(
                 '@param %s $%s',
-                $prop->getPhpDocType(),
+                $docType,
                 $paramName
             ));
         }
@@ -239,9 +244,15 @@ class ModelConstructorGenerator
                 $prop->getPhpPropertyName()
             ));
         }
+
+        $docType = $prop->getPhpDocType();
+        if (!$isRequired && !$prop->isCollection()) {
+            $docType .= '|null';
+        }
+
         $constructor->addComment(sprintf(
             '@param %s $%s',
-            $prop->getPhpDocType() . ($isRequired && !$prop->isCollection() ? '|null' : ''),
+            $docType,
             $prop->getPhpPropertyName()
         ));
     }

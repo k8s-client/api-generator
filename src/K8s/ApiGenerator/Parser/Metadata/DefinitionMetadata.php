@@ -129,7 +129,14 @@ class DefinitionMetadata
 
     public function isObject(): bool
     {
-        return $this->definition->type === 'object';
+        # There order here is odd, but in Kubernetes 1.13 and below they were not setting this to an object.
+        # So we use this logic universally to catch Kubernetes 1.14 and above, and the last return logic for 1.13 and below.
+        if ($this->definition->type && $this->definition->type === 'object') {
+            return true;
+        }
+
+        return !$this->definition->type
+            && !empty($this->getProperties());
     }
 
     public function isDateTime(): bool

@@ -1,0 +1,15 @@
+name: trigger-api-generation
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  trigger-api-generation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger API Generation Workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: generate-api
+          repo: ChadSikorra/k8s-api
+          token: ${{ secrets.PERSONAL_TOKEN }}

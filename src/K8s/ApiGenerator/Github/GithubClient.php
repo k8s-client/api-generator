@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace K8s\ApiGenerator\Github;
 
 use K8s\ApiGenerator\Exception\GithubException;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -32,12 +33,20 @@ class GithubClient
     {
         $gitTags = [];
 
-        $response = $this->httpClient->request(
-            'GET',
-            $this->makeApiUri("/repos/{$owner}/{$repo}/git/refs/tags"),
-            $this->makeHttpOptions()
-        );
-        $tags = json_decode($response->getContent(), true);
+        try {
+            $response = $this->httpClient->request(
+                'GET',
+                $this->makeApiUri("/repos/{$owner}/{$repo}/git/refs/tags"),
+                $this->makeHttpOptions()
+            );
+            $tags = json_decode($response->getContent(), true);
+        } catch (ClientException $e) {
+            if ($e->getCode() !== 404) {
+                throw $e;
+            }
+
+            $tags = [];
+        }
 
         foreach ($tags as $tag) {
             $gitTags[] = new GitTag($tag);

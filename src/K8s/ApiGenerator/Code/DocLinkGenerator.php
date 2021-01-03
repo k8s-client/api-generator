@@ -53,7 +53,11 @@ class DocLinkGenerator
             implode('.', explode('.', $version, -1)),
             implode(
                 '-',
-                array_map(fn (string $piece) => str_replace('.', '-', strtolower($piece)), $actionKindVersionGroup)
+                array_map(fn (string $piece) => str_replace(
+                    '.',
+                    '-',
+                    strtolower($piece)
+                ), $actionKindVersionGroup)
             )
         );
     }

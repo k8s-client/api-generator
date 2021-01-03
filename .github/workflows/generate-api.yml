@@ -13,3 +13,4 @@ jobs:
           workflow: generate-api
           repo: ChadSikorra/k8s-api
           token: ${{ secrets.PERSONAL_TOKEN }}
+          ref: master

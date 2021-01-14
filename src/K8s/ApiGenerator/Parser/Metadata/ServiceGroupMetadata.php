@@ -126,6 +126,22 @@ class ServiceGroupMetadata
         return null;
     }
 
+    public function getDeleteCollectionOperation(bool $namespaced = true): ?OperationMetadata
+    {
+        foreach ($this->operations as $operation) {
+            if ($operation->getKubernetesAction() !== 'deletecollection') {
+                continue;
+            }
+            if ($namespaced && $operation->requiresNamespace()) {
+                return $operation;
+            } elseif (!$namespaced && !$operation->requiresNamespace()) {
+                return $operation;
+            }
+        }
+
+        return null;
+    }
+
     public function getWatchOperation(bool $namespaced = true): ?OperationMetadata
     {
         $operation = $this->getListOperation($namespaced);

@@ -66,6 +66,7 @@ class ModelPropertyGenerator
         if ($default) {
             $phpProperty->setValue($default);
         }
+        $phpProperty->setInitialized(!$this->isPropRequired($definition, $property));
 
         $annotationProps = ['"' . $property->getName() . '"'];
         if ($modelProp->getAnnotationType()) {

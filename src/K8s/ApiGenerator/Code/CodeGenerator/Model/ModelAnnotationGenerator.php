@@ -68,6 +68,8 @@ class ModelAnnotationGenerator
             'post' => $modelSvcGroup->getCreateOperation(),
             'delete' => $modelSvcGroup->getDeleteOperation(),
             'watch' => $modelSvcGroup->getWatchOperation(),
+            'put' => $modelSvcGroup->getPutOperation(),
+            'put-status' => $modelSvcGroup->getPutStatusOperation(),
             'deletecollection' => $modelSvcGroup->getDeleteCollectionOperation(),
             'deletecollection-all' => $modelSvcGroup->getDeleteCollectionOperation(false),
             'watch-all' => $modelSvcGroup->getWatchOperation(false),

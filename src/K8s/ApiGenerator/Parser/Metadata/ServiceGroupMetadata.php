@@ -190,6 +190,34 @@ class ServiceGroupMetadata
         return null;
     }
 
+    public function getPutOperation(): ?OperationMetadata
+    {
+        foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) === '/status') {
+                continue;
+            }
+            if ($operation->getKubernetesAction() === 'put') {
+                return $operation;
+            }
+        }
+
+        return null;
+    }
+
+    public function getPutStatusOperation(): ?OperationMetadata
+    {
+        foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) !== '/status') {
+                continue;
+            }
+            if ($operation->getKubernetesAction() === 'put') {
+                return $operation;
+            }
+        }
+
+        return null;
+    }
+
     private function makeFinalNamespace(string $namespace): string
     {
         return sprintf(

@@ -20,6 +20,7 @@ use K8s\ApiGenerator\Code\Formatter\DocBlockFormatterTrait;
 use K8s\ApiGenerator\Code\Formatter\PhpParameterDefinitionNameFormatter;
 use K8s\ApiGenerator\Parser\Metadata\Metadata;
 use K8s\ApiGenerator\Parser\Metadata\OperationMetadata;
+use K8s\Core\PatchInterface;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
 
@@ -77,8 +78,9 @@ class OperationMethodCodeGenerator
                         ->setType($paramFqcn);
                     $body = $paramName;
                 } elseif ($definition->isPatch()) {
+                    $namespace->addUse(PatchInterface::class);
                     $method->addParameter('patch')
-                        ->setType('array');
+                        ->setType(PatchInterface::class);
                     $body = 'patch';
                 }
             } elseif ($param->isQueryParam()) {

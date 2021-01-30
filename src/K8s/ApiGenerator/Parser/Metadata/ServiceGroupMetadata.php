@@ -171,6 +171,23 @@ class ServiceGroupMetadata
     public function getReadOperation(): ?OperationMetadata
     {
         foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) === '/status') {
+                continue;
+            }
+            if ($operation->getKubernetesAction() === 'get') {
+                return $operation;
+            }
+        }
+
+        return null;
+    }
+
+    public function getReadStatusOperation(): ?OperationMetadata
+    {
+        foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) !== '/status') {
+                continue;
+            }
             if ($operation->getKubernetesAction() === 'get') {
                 return $operation;
             }

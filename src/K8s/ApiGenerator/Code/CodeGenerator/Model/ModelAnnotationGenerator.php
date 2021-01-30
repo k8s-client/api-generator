@@ -65,6 +65,7 @@ class ModelAnnotationGenerator
 
         $operations = [
             'get' => $modelSvcGroup->getReadOperation(),
+            'get-status' => $modelSvcGroup->getReadStatusOperation(),
             'post' => $modelSvcGroup->getCreateOperation(),
             'delete' => $modelSvcGroup->getDeleteOperation(),
             'watch' => $modelSvcGroup->getWatchOperation(),

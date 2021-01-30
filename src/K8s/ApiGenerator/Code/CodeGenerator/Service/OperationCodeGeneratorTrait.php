@@ -17,6 +17,7 @@ trait OperationCodeGeneratorTrait
 {
     private function isPodExec(string $phpMethodName): bool
     {
-        return substr($phpMethodName, -strlen('PodExec')) === 'PodExec';
+        return substr($phpMethodName, -strlen('PodExec')) === 'PodExec'
+            || substr($phpMethodName, -strlen('PodAttach')) == 'PodAttach';
     }
 }

@@ -74,6 +74,7 @@ class ModelAnnotationGenerator
             'deletecollection-all' => $modelSvcGroup->getDeleteCollectionOperation(false),
             'watch-all' => $modelSvcGroup->getWatchOperation(false),
             'patch' => $modelSvcGroup->getPatchOperation(),
+            'patch-status' => $modelSvcGroup->getPatchStatusOperation(),
             'list' =>  $modelSvcGroup->getListOperation(),
             'list-all' => $modelSvcGroup->getListOperation(false),
         ];

@@ -182,6 +182,23 @@ class ServiceGroupMetadata
     public function getPatchOperation(): ?OperationMetadata
     {
         foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) === '/status') {
+                continue;
+            }
+            if ($operation->getKubernetesAction() === 'patch') {
+                return $operation;
+            }
+        }
+
+        return null;
+    }
+
+    public function getPatchStatusOperation(): ?OperationMetadata
+    {
+        foreach ($this->operations as $operation) {
+            if (substr($operation->getUriPath(), -strlen('/status')) !== '/status') {
+                continue;
+            }
             if ($operation->getKubernetesAction() === 'patch') {
                 return $operation;
             }

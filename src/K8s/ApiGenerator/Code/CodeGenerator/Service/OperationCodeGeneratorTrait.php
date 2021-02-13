@@ -20,4 +20,15 @@ trait OperationCodeGeneratorTrait
         return substr($phpMethodName, -strlen('PodExec')) === 'PodExec'
             || substr($phpMethodName, -strlen('PodAttach')) == 'PodAttach';
     }
+
+    private function isPortForward(string $phpMethodName): bool
+    {
+        return substr($phpMethodName, -strlen('Portforward')) === 'Portforward';
+    }
+
+    private function isProxy(string $phpMethodName): bool
+    {
+        return substr($phpMethodName, -strlen('Proxy')) === 'Proxy'
+            || substr($phpMethodName, -strlen('ProxyWithPath')) == 'ProxyWithPath';
+    }
 }

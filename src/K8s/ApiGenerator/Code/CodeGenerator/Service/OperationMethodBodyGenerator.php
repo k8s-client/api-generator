@@ -55,7 +55,7 @@ class OperationMethodBodyGenerator
         $method->addBody('');
 
         if ($operation->isWebsocketOperation()) {
-            $type = $this->isPodExec($operation->getPhpMethodName()) ? 'exec' : 'generic';
+            $type = $this->getWebsocketOperationType($operation->getPhpMethodName());
             $method->addBody(
                 <<<PHP_BODY
             $returnOrNot\$this->api->executeWebsocket(
@@ -117,5 +117,18 @@ class OperationMethodBodyGenerator
         }
 
         return false;
+    }
+
+    private function getWebsocketOperationType(string $phpMethodName): string
+    {
+        if ($this->isPodExec($phpMethodName)) {
+            return 'exec';
+        } elseif ($this->isPortForward($phpMethodName)) {
+            return 'portforward';
+        } elseif ($this->isProxy($phpMethodName)) {
+            return 'proxy';
+        } else {
+            return 'generic';
+        }
     }
 }

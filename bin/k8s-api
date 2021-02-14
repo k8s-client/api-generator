@@ -23,7 +23,7 @@ use Symfony\Component\Console\Application;
 
 $app = new Application(
     'K8s API Generator',
-    '0.8.1'
+    '0.9.0'
 );
 $app->add(new GenerateCommand());
 $app->add(new ApiVersionsCommand());

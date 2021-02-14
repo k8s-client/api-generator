@@ -111,12 +111,7 @@ class OperationMethodCodeGenerator
 
         if ($operation->needsCallableParameter()) {
             $param = $method->addParameter('handler');
-            $types = 'callable';
-            if (!$this->isPodExec($operation->getPhpMethodName())) {
-                $param->setType('callable');
-            } else {
-                $types .= '|object';
-            }
+            $types = 'callable|object';
             if (!$operation->isWebsocketOperation()) {
                 $param->setNullable(true);
                 $param->setDefaultValue(null);

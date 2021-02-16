@@ -127,7 +127,8 @@ class OperationMetadata
 
     public function isWebsocketOperation(): bool
     {
-        return $this->getKubernetesAction() === 'connect';
+        return $this->getKubernetesAction() === 'connect'
+            && !$this->isProxy();
     }
 
     public function requiresNamespace(): bool
@@ -263,7 +264,7 @@ class OperationMetadata
 
     public function needsCallableParameter(): bool
     {
-        if ($this->getKubernetesAction() === 'connect') {
+        if ($this->isWebsocketOperation()) {
             return true;
         }
 
@@ -344,5 +345,11 @@ class OperationMetadata
             $this->getDescription(),
             $deprecatedPos + strlen(self::DEPRECATION_MARKER)
         ));
+    }
+
+    private function isProxy(): bool
+    {
+        return substr($this->getPhpMethodName(), -strlen('Proxy')) === 'Proxy'
+            || substr($this->getPhpMethodName(), -strlen('ProxyWithPath')) == 'ProxyWithPath';
     }
 }

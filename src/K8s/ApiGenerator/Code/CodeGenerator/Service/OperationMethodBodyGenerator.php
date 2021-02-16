@@ -32,6 +32,7 @@ class OperationMethodBodyGenerator
         ?string $body
     ): void {
         $method->addBody('$options[\'query\'] = $query;');
+        $method->addBody(sprintf('$options[\'method\'] = \'%s\';', $operation->getMethod()));
         if ($body) {
             $method->addBody(sprintf(
                 '$options[\'body\'] = $%s;',

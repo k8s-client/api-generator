@@ -186,7 +186,7 @@ class OperationMetadata
 
     public function getReturnedType(): ?string
     {
-        if (in_array($this->getKubernetesAction(), self::VOID_METHODS, true)) {
+        if (in_array($this->getKubernetesAction(), self::VOID_METHODS, true) && !$this->isProxy()) {
             return 'void';
         }
         $success = [];

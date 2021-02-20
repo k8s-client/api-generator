@@ -347,9 +347,14 @@ class OperationMetadata
         ));
     }
 
+    public function isProxyWithPath(): bool
+    {
+        return substr($this->getPhpMethodName(), -strlen('ProxyWithPath')) == 'ProxyWithPath';
+    }
+
     private function isProxy(): bool
     {
         return substr($this->getPhpMethodName(), -strlen('Proxy')) === 'Proxy'
-            || substr($this->getPhpMethodName(), -strlen('ProxyWithPath')) == 'ProxyWithPath';
+            || $this->isProxyWithPath();
     }
 }

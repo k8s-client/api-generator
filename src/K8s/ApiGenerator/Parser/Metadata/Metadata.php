@@ -77,6 +77,18 @@ class Metadata
     }
 
     /**
+     * @param string $kind
+     * @return OperationMetadata[]
+     */
+    public function findOperationsByKind(string $kind): array
+    {
+        return array_filter(
+            $this->operations,
+            fn (OperationMetadata $metadata) => $metadata->getKubernetesKind() === $kind
+        );
+    }
+
+    /**
      * @return ServiceGroupMetadata[]
      */
     public function getServiceGroups(): array

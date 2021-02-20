@@ -78,6 +78,7 @@ class ModelAnnotationGenerator
             'patch-status' => $modelSvcGroup->getPatchStatusOperation(),
             'list' =>  $modelSvcGroup->getListOperation(),
             'list-all' => $modelSvcGroup->getListOperation(false),
+            'proxy' => $this->getProxyOperation($metadata, $modelSvcGroup->getKind())
         ];
 
         /**@var OperationMetadata $operation */
@@ -113,5 +114,21 @@ class ModelAnnotationGenerator
                 implode(',', $params)
             ));
         }
+    }
+
+    private function getProxyOperation(Metadata $metadata, string $kind): ?OperationMetadata
+    {
+        $operations = $metadata->findOperationsByKind($kind . 'ProxyOptions');
+        if (empty($operations)) {
+            return null;
+        }
+
+        foreach ($operations as $operation) {
+            if ($operation->isProxyWithPath()) {
+                return $operation;
+            }
+        }
+
+        return null;
     }
 }

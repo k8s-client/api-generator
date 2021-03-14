@@ -49,21 +49,21 @@ class ApiVersionsCommand extends Command
             null,
             InputOption::VALUE_REQUIRED,
             'The Github K8s API owner.',
-            'ChadSikorra'
+            'k8s-client'
         );
         $this->addOption(
             'gh-api-repo',
             null,
             InputOption::VALUE_REQUIRED,
             'The Github K8s API repo.',
-            'k8s-api'
+            'api'
         );
         $this->addOption(
             'last-n',
             null,
             InputOption::VALUE_REQUIRED,
             'Only for the last number of non-minor releases.',
-            'k8s-api'
+            '10'
         );
     }
 

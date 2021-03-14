@@ -11,6 +11,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: generate-api
-          repo: ChadSikorra/k8s-api
+          repo: k8s-client/api
           token: ${{ secrets.PERSONAL_TOKEN }}
           ref: master

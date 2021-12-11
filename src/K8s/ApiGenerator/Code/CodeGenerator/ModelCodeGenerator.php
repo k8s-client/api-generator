@@ -128,6 +128,7 @@ class ModelCodeGenerator
             }
             $class->addImplement('IteratorAggregate');
             $method = $class->addMethod('getIterator');
+            $method->setReturnType(\Traversable::class);
             $method->addBody('return new \ArrayIterator(iterator_to_array($this->items));');
             if ($item) {
                 $method->addComment(sprintf(
